@@ -1,0 +1,4 @@
+.env
+angles*.csv
+frame_images/*.jpg
+sample_videos/*.mp4
