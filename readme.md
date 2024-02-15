@@ -18,3 +18,8 @@ bash create_env/create_env.sh
 ```
 source env/bin/activate
 ```
+#
+
+### Objetivo do projeto
+
+O objetivo desse projeto é fazer uso de inteligência artificial para mapear pontos de articulações com um esqueleto pré-estabelecido. 
