@@ -10,6 +10,7 @@ import seaborn as sns
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 
+
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
@@ -298,42 +299,121 @@ def main():
 
 
     
-    yhat = savgol_filter(vetortest[0], 7, 2)  # aplicar o filtro
-    output_file_points = 'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/output.tsv'
+
+
+
+
+
+
+    #_________________________________________________________________________
+    # Filtro Savgol_filter em todos os pontos, nos eixos X, Y E Z
+    #_________________________________________________________________________
+
+    filter_wrist1_x = savgol_filter(vetor_wrist1[0], 7, 2)
+    filter_wrist1_y = savgol_filter(vetor_wrist1[1], 7, 2)
+    filter_wrist1_z = savgol_filter(vetor_wrist1[2], 7, 2)
+
+    filter_wrist2_x = savgol_filter(vetor_wrist2[0], 7, 2)
+    filter_wrist2_y = savgol_filter(vetor_wrist2[1], 7, 2)
+    filter_wrist2_z = savgol_filter(vetor_wrist2[2], 7, 2)
+
+    filter_shoulder1_x = savgol_filter(vetor_shoulder1[0], 7, 2)
+    filter_shoulder1_y = savgol_filter(vetor_shoulder1[1], 7, 2)
+    filter_shoulder1_z = savgol_filter(vetor_shoulder1[2], 7, 2)
+
+    filter_shoulder2_x = savgol_filter(vetor_shoulder2[0], 7, 2)
+    filter_shoulder2_y = savgol_filter(vetor_shoulder2[1], 7, 2)
+    filter_shoulder2_z = savgol_filter(vetor_shoulder2[2], 7, 2)
+
+    filter_elbow1_x = savgol_filter(vetor_elbow1[0], 7, 2)
+    filter_elbow1_y = savgol_filter(vetor_elbow1[1], 7, 2)
+    filter_elbow1_z = savgol_filter(vetor_elbow1[2], 7, 2)
+
+    filter_elbow2_x = savgol_filter(vetor_elbow2[0], 7, 2)
+    filter_elbow2_y = savgol_filter(vetor_elbow2[1], 7, 2)
+    filter_elbow2_z = savgol_filter(vetor_elbow2[2], 7, 2)
+
+
+    filter_hip1_x = savgol_filter(vetor_hip1[0], 7, 2)
+    filter_hip1_y = savgol_filter(vetor_hip1[1], 7, 2)
+    filter_hip1_z = savgol_filter(vetor_hip1[2], 7, 2)
+
+
+    filter_hip2_x = savgol_filter(vetor_hip2[0], 7, 2)
+    filter_hip2_y = savgol_filter(vetor_hip2[1], 7, 2)
+    filter_hip2_z = savgol_filter(vetor_hip2[2], 7, 2)
+
+    filter_knee1_x = savgol_filter(vetor_knee1[0], 7, 2)
+    filter_knee1_y = savgol_filter(vetor_knee1[1], 7, 2)
+    filter_knee1_z = savgol_filter(vetor_knee1[2], 7, 2)
+
+
+    filter_knee2_x = savgol_filter(vetor_knee2[0], 7, 2)
+    filter_knee2_y = savgol_filter(vetor_knee2[1], 7, 2)
+    filter_knee2_z = savgol_filter(vetor_knee2[2], 7, 2)
+
+
+    filter_olho1_x = savgol_filter(vetor_olho1[0], 7, 2)
+    filter_olho1_y = savgol_filter(vetor_olho1[1], 7, 2)
+    filter_olho1_z = savgol_filter(vetor_olho1[2], 7, 2)
+
+    filter_olho2_x = savgol_filter(vetor_olho2[0], 7, 2)
+    filter_olho2_y = savgol_filter(vetor_olho2[1], 7, 2)
+    filter_olho2_z = savgol_filter(vetor_olho2[2], 7, 2)
+
+    
+
+    
     #input_file = 'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/output.tsv'
+    # Crie uma lista com todos os pontos filtrados
+    filtered_points = [
+        filter_wrist1_x, filter_wrist1_y, filter_wrist1_z,
+        filter_wrist2_x, filter_wrist2_y, filter_wrist2_z,
+        filter_shoulder1_x, filter_shoulder1_y, filter_shoulder1_z,
+        filter_shoulder2_x, filter_shoulder2_y, filter_shoulder2_z,
+        filter_elbow1_x, filter_elbow1_y, filter_elbow1_z,
+        filter_elbow2_x, filter_elbow2_y, filter_elbow2_z,
+        filter_hip1_x, filter_hip1_y, filter_hip1_z,
+        filter_hip2_x, filter_hip2_y, filter_hip2_z,
+        filter_knee1_x, filter_knee1_y, filter_knee1_z,
+        filter_knee2_x, filter_knee2_y, filter_knee2_z,
+        filter_olho1_x, filter_olho1_y, filter_olho1_z,
+        filter_olho2_x, filter_olho2_y, filter_olho2_z
+    ]
 
+    output_file_points = 'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/output.tsv'
 
+    for yhat in filtered_points:
+        if os.path.getsize(output_file_points) == 0:
+            with open(output_file_points, 'w', newline='') as tsv_out:
+                writer = csv.writer(tsv_out, delimiter='\n')
+                writer.writerow(yhat)
+        else:
+            # Ler o arquivo existente
+            with open(output_file_points, 'r', newline='') as tsv_in:
+                reader = csv.reader(tsv_in, delimiter='\t')
+                data = list(reader)
 
-    if os.path.getsize(output_file_points) == 0:
-        with open(output_file_points, 'w', newline='') as tsv_out:
-            writer = csv.writer(tsv_out, delimiter='\n')
-            writer.writerow(yhat)
+            # Adicionar o novo ponto a cada linha
+            for i in range(len(data)):
+                data[i].append(yhat[i])
 
-    else:
-        # Ler o arquivo existente
-        with open(output_file_points, 'r', newline='') as tsv_in:
-            reader = csv.reader(tsv_in, delimiter='\t')
-            data = list(reader)
+            # Reescrever o arquivo com o novo ponto
+            with open(output_file_points, 'w', newline='') as tsv_out:
+                writer = csv.writer(tsv_out, delimiter='\t')
+                writer.writerows(data)
 
-        # Adicionar o novo ponto a cada linha
-        for i in range(len(data)):
-            data[i].append(yhat[i])
-
-        # Reescrever o arquivo com o novo ponto
-        with open(output_file_points, 'w', newline='') as tsv_out:
-            writer = csv.writer(tsv_out, delimiter='\t')
-            writer.writerows(data)
+ 
     
     
     
     
     
-    
-    sns.lineplot(vetortest[0], marker = '_', color = 'green', alpha = 0.5)
+    #sns.lineplot(vetortest[0], marker = '_', color = 'green', alpha = 0.5)
 
     # plota o grafico do seno com o ruido adicionado
-    sns.lineplot(yhat, marker = '+', color = 'black', alpha = 0.5)
-    plt.show()
+    #sns.lineplot(yhat, marker = '+', color = 'black', alpha = 0.5)
+    #plt.show()
     cap.release()
     cv2.destroyAllWindows()
 
