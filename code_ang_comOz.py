@@ -362,7 +362,7 @@ def main():
     filter_olho2_z = savgol_filter(vetor_olho2[2], 7, 2)
 
     
-
+    print(filter_elbow1_x, filter_elbow1_y, filter_elbow1_z)
     
     #input_file = 'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/output.tsv'
     # Crie uma lista com todos os pontos filtrados
