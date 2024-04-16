@@ -149,7 +149,7 @@ def main():
 
                     return math.degrees(angulo)   
             #_________________________________________________________________________
-            # Flexão do cotovelo direito 
+            # Coleta de X, Y E Z de todos os pontos necessários
             #_________________________________________________________________________
 
                 wrist1 = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
@@ -161,165 +161,106 @@ def main():
                 vetor_wrist1[1].append(b)
                 vetor_wrist1[2].append(c)
 
+
                 shoulder1 = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
                         landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y,
                         landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].z]
                 a,b,c = shoulder1
                 vetor_shoulder1[0].append(a)
-                vetor_shoulder1[0].append(b)
-                vetor_shoulder1[0].append(c)
+                vetor_shoulder1[1].append(b)
+                vetor_shoulder1[2].append(c)
             
+
                 elbow1 = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
                         landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y, 
                         landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].z]
                 a,b,c = elbow1
                 vetor_elbow1[0].append(a)
-                vetor_elbow1[0].append(b)
-                vetor_elbow1[0].append(c)
-            
-                #angleCotD = 180 - calculo_angulo(shoulder1,  elbow1, wrist1)
-
-                
-                
-
-                
-                
-   
-            #_________________________________________________________________________
-            # Flexão do cotovelo esquerdo 
-            #_________________________________________________________________________
+                vetor_elbow1[1].append(b)
+                vetor_elbow1[2].append(c)
 
 
                 wrist2 = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y,
                         landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
-            
+                a,b,c = wrist2
+                vetor_wrist2[0].append(a)
+                vetor_wrist2[1].append(b)
+                vetor_wrist2[2].append(c)          
+
+
                 shoulder2 = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y,
                         landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z]
+                a,b,c = shoulder2
+                vetor_shoulder2[0].append(a)
+                vetor_shoulder2[1].append(b)
+                vetor_shoulder2[2].append(c)
+
+
             
                 elbow2 = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y, 
                         landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z]
+                a,b,c = elbow2
+                vetor_elbow2[0].append(a)
+                vetor_elbow2[1].append(b)
+                vetor_elbow2[2].append(c)
             
-                #angleCotE = 180 - calculo_angulo(shoulder2,  elbow2, wrist2)
-            #_________________________________________________________________________
-            # Abdução do ombro direito
-            #_________________________________________________________________________
- 
-
-                #angleAOmbD = 180 - calculo_angulo(shoulder2,  shoulder1, elbow1)
-           
-
-            #_________________________________________________________________________
-            # Abdução do ombro esquerdo
-            #_________________________________________________________________________
-
-                #angleAOmbE = 180 - calculo_angulo(shoulder1,  shoulder2, elbow2)
-            
-            #_________________________________________________________________________
-            # Flexão do ombro direito
-            #_________________________________________________________________________
-
-
 
                 hip1 = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
                         landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y,
                         landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].z]
-                
-                x1, y1, z1 = elbow1
-                x2, y2, z2 = shoulder1
-                x3, y3, z3 = shoulder1
-                x4, y4, z4 = hip1
-                angleFOmbD = 180 - angulo_de_flexao(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4)
+                a,b,c = hip1
+                vetor_hip1[0].append(a)
+                vetor_hip1[1].append(b)
+                vetor_hip1[2].append(c)
 
-                #angleFOmbD = 180 - calculo_angulo(hip1,  shoulder1, elbow1)
-
-            #_________________________________________________________________________
-            # Flexão do ombro esquerdo
-            #_________________________________________________________________________
-
+              
                 hip2 = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y,
                         landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].z]
-   
-                x1, y1, z1 = elbow2
-                x2, y2, z2 = shoulder2
-                x3, y3, z3 = shoulder2
-                x4, y4, z4 = hip2
-                #angleFOmbE = 180 - angulo_de_flexao(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4)
-                #angleFOmbE = 180 - calculo_angulo(hip2,  shoulder2, elbow2)
-            
-           
-            #_________________________________________________________________________
-            # Flexão da cabeça
-            #_________________________________________________________________________
+                a,b,c = hip2
+                vetor_hip2[0].append(a)
+                vetor_hip2[1].append(b)
+                vetor_hip2[2].append(c)  
 
+             
                 olho1 = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].x,
                         landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].y,
                         landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].z]
-            
+                a,b,c = olho1
+                vetor_olho1[0].append(a)
+                vetor_olho1[1].append(b)
+                vetor_olho1[2].append(c)  
+
+
                 olho2 = [landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].y,
                         landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].z]
-            
-                x2, y2, z2 = olho1
-                x1, y1, z1 = olho2
-                meio3 = calculate_midpoint(x1, y1, z1, x2, y2, z2)
-                x2, y2, z2 = shoulder2
-                x1, y1, z1 = shoulder1
-                meio1 = calculate_midpoint(x1, y1, z1, x2, y2, z2)
-                x2, y2, z2 = hip1
-                x1, y1, z1 = hip2
-                meio2 = calculate_midpoint(x1, y1, z1, x2, y2, z2)
-                #angleFCab = 180 - calculo_angulo(meio3, meio1, meio2)
+                a,b,c = olho2
+                vetor_olho2[0].append(a)
+                vetor_olho2[1].append(b)
+                vetor_olho2[2].append(c)  
 
-            #_________________________________________________________________________
-            # Flexão do tronco
-            #_________________________________________________________________________
             
                 knee1 = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
                         landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y,
                         landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].z]
+                a,b,c = knee1
+                vetor_knee1[0].append(a)
+                vetor_knee1[1].append(b)
+                vetor_knee1[2].append(c)  
+
                 knee2 = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y,
                         landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].z]
-            
-                x2, y2, z2 = knee1
-   
-                x1, y1, z1 = knee2
-                meio3 = calculate_midpoint(x1, y1, z1, x2, y2, z2)
-
-                #angleFTro = 180 - calculo_angulo(meio1,  meio2, meio3)
-            #_________________________________________________________________________
-            # Rotação do tronco
-            #_________________________________________________________________________
-
-           
-                x1, y1, z1 = shoulder1
-                x2, y2, z2 = shoulder2
-                x3, y3, z3 = hip1
-                x4, y4, z4 = hip2
-                #angleRTro = angulo_de_flexao(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4)
+                a,b,c = knee2
+                vetor_knee2[0].append(a)
+                vetor_knee2[1].append(b)
+                vetor_knee2[2].append(c)  
 
 
-
-                '''
-                #angles = {
-                "Flexão_CotoveloD": angleCotD, 
-                "Flexão_CotoveloE": angleCotE, 
-                "Abdução_OmbroE": angleAOmbE, 
-                "Abdução_OmbroD": angleAOmbD,
-                "Flexão_OmbroE": angleFOmbE,
-                "Flexão_OmbroD": angleFOmbD
-                }
-                angles2 = {
-                "Flexão_Cab": angleFCab,
-                "Flexão_Tro": angleFTro,
-                "Rotação_Tro": angleRTro
-                }
-
-                '''
 
 
 
