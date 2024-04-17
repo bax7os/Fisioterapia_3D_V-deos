@@ -66,8 +66,8 @@ def desenha_landmarks(image, landmarks, connections):
 
 
 
-def main():
-    """Função principal do programa."""
+def main(cap, video_name):
+    """Função principal do programa.
     cv2.namedWindow('Imagem WebCam', cv2.WINDOW_NORMAL)
     FOLDER_IMAGE_PATH = 'frame_images'
     IMPORT_NAME_VIDEO = 'video.mp4'
@@ -78,9 +78,11 @@ def main():
   
     csv_file = utils_csv.create_csv(OUT_FILENAME_CSV)
     csv_file2 = utils_csv.create_csv(OUT_FILENAME_CSV2)
-    frame_count = 0
+
     cap = utils_video.importar_video(IMPORT_NAME_VIDEO)
-    
+    """
+    frame_count = 0
+    #utils_video.processar_videos('sample_videos')
 
 
     vetor_wrist1 = [[],[],[]]
@@ -96,7 +98,7 @@ def main():
     vetor_olho1 = [[],[],[]]
     vetor_olho2 = [[],[],[]]
     #utils_video.remove_files()
-    cont = 0
+
     
     # Cria uma instância do objeto Pose fora do loop
     pose = mp_pose.Pose(min_detection_confidence=0.7, min_tracking_confidence=0.7)
@@ -287,7 +289,7 @@ def main():
 
         desenha_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
-        utils_video.frames_from_video(frame, frame_count, OUT_FILENAME_VIDEO, FOLDER_IMAGE_PATH)
+        #utils_video.frames_from_video(frame, frame_count, OUT_FILENAME_VIDEO, FOLDER_IMAGE_PATH)
     
         cv2.imshow('Imagem WebCam', frame)
         cv2.resizeWindow('Imagem WebCam', 720, 1366)
@@ -381,9 +383,16 @@ def main():
         filter_olho2_x, filter_olho2_y, filter_olho2_z
     ]
 
-    output_file_points = 'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/output.tsv'
+    output_file_points = f'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/{video_name}.tsv'
 
     for yhat in filtered_points:
+
+            # Verifica se o arquivo existe.
+        if not os.path.exists(output_file_points):
+            # Se o arquivo não existir, cria um novo.
+            with open(output_file_points, 'w') as f:
+                pass
+        
         if os.path.getsize(output_file_points) == 0:
             with open(output_file_points, 'w', newline='') as tsv_out:
                 writer = csv.writer(tsv_out, delimiter='\n')
@@ -417,5 +426,6 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
 
+    pass
 if __name__ == '__main__':
-    main()
+    utils_video.processar_videos('D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/sample_videos/')

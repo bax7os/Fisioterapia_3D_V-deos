@@ -1,78 +1,53 @@
-import os
+import glob
 import cv2
-import time
+import os
+from code_ang_comOz import main
+
+def processar_videos(diretorio):
+    """
+    Processa todos os vídeos em um diretório específico.
+
+    Args:
+        diretorio: O caminho do diretório que contém os vídeos.
+
+    Returns:
+        None
+    """
+    # Obtém uma lista de todos os arquivos de vídeo no diretório.
+    videos = glob.glob(f'{diretorio}/*.mp4')
+
+    # Itera sobre cada arquivo de vídeo.
+    for video in videos:
+        # Importa o vídeo.
+        cap = importar_video(video)
+
+        # Obtém o nome do arquivo de vídeo sem a extensão.
+        video_name = os.path.basename(video).split('.')[0]
+
+        # Processa o vídeo.
+        main(cap, video_name)
 
 def importar_video(filename):
-  """
-  Importa um vídeo de algum diretório.
+    """
+    Importa um vídeo de algum diretório.
 
-  Args:
-    caminho_do_arquivo: O caminho completo do arquivo de vídeo.
+    Args:
+        filename: O caminho completo do arquivo de vídeo.
 
-  Returns:
-    Um objeto VideoFileClip da biblioteca OpenCV.
-  """
+    Returns:
+        Um objeto VideoCapture da biblioteca OpenCV.
+    """
+    # Abre o arquivo de vídeo no modo de leitura.
+    video_clip = cv2.VideoCapture(filename)
 
-  # Abre o arquivo de vídeo no modo de leitura.
-  video_clip = cv2.VideoCapture(f'sample_videos/{filename}')
+    # Verifica se o arquivo foi aberto com sucesso.
+    if not video_clip.isOpened():
+        raise FileNotFoundError(f"O arquivo '{filename}' não foi encontrado.")
 
-  # Verifica se o arquivo foi aberto com sucesso.
-  if not video_clip.isOpened():
-    raise FileNotFoundError(f"O arquivo '{filename}' não foi encontrado.")
-
-  # Retorna o objeto VideoFileClip.
-  return video_clip
-
-def importar_webcam():
-  """
-  Importa um vídeo de algum diretório.
-
-  Args:
-    caminho_do_arquivo: O caminho completo do arquivo de vídeo.
-
-  Returns:
-    Um objeto VideoFileClip da biblioteca OpenCV.
-  """
-
-  # Abre o arquivo de vídeo no modo de leitura.
-  webcam = cv2.VideoCapture(0)
-
-  # Verifica se o arquivo foi aberto com sucesso.
-  if not webcam.isOpened():
-    raise FileNotFoundError(f"OWebcam não foi encontrada.")
-
-  # Retorna o objeto VideoFileClip.
-  return webcam
+    # Retorna o objeto VideoCapture.
+    return video_clip
 
 
-def frames_from_video(frame, frame_count, filename, folderfile='frame_images'):
-  """
-  Gera fotos a cada um segundo de um vídeo.
-
-  Args:
-    video_clip: Um objeto VideoFileClip da biblioteca OpenCV.
-    intervalo: O intervalo em segundos entre as fotos.
-
-  Returns:
-    Uma lista de imagens.
-  """  
-  # Salva a foto na pasta especificada.
-  cv2.imwrite(f"{folderfile}/{filename}__{frame_count}.jpg", frame)
-  
-  time.sleep(0.01)
-
-
-def remove_files(caminho_pasta = 'frame_images/'):
-    """Remove todos os arquivos de uma pasta."""
-
-    # Obtém uma lista de todos os arquivos na pasta
-    arquivos = os.listdir(caminho_pasta)
-
-    # Percorre a lista de arquivos
-    for arquivo in arquivos:
-        # Remove o arquivo JPG
-        if arquivo.endswith(".jpg"):
-          os.remove(os.path.join(caminho_pasta, arquivo))
 
 # # Exemplo de uso.
 # caminho_do_arquivo = './sample_videos/video_test.mp4'
