@@ -163,7 +163,7 @@ def main(cap, video_name):
                 vetor_wrist1[0].append(a)
                 vetor_wrist1[1].append(b)
                 vetor_wrist1[2].append(c)
-
+                
 
                 shoulder1 = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
                         landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y,
@@ -314,6 +314,9 @@ def main(cap, video_name):
     filter_wrist1_x = savgol_filter(vetor_wrist1[0], 7, 2)
     filter_wrist1_y = savgol_filter(vetor_wrist1[1], 7, 2)
     filter_wrist1_z = savgol_filter(vetor_wrist1[2], 7, 2)
+    
+
+    #print(filter_wrist1_x, filter_wrist1_y, filter_wrist1_z)
 
     filter_wrist2_x = savgol_filter(vetor_wrist2[0], 7, 2)
     filter_wrist2_y = savgol_filter(vetor_wrist2[1], 7, 2)
@@ -364,7 +367,7 @@ def main(cap, video_name):
     filter_olho2_z = savgol_filter(vetor_olho2[2], 7, 2)
 
     
-    print(filter_elbow1_x, filter_elbow1_y, filter_elbow1_z)
+   
     
     #input_file = 'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/output.tsv'
     # Crie uma lista com todos os pontos filtrados
@@ -383,34 +386,20 @@ def main(cap, video_name):
         filter_olho2_x, filter_olho2_y, filter_olho2_z
     ]
 
+    # ROW: 
+    # [0:3] wrist1, [3:6] wrist2, [6:9] shoulder1, [9:12] shoulder2, [12:15] elbow1, [15:18] elbow2
+    # [18:21] hip1, [21:24] hip2, [24:27] knee1, [27:30] knee2, [30:33] olho1, [33:36] olho2
+
     output_file_points = f'D:/Faculdade/PET/Fisioterapia/Fisioterapia_3D_Videos/teste/{video_name}.tsv'
 
-    for yhat in filtered_points:
 
-            # Verifica se o arquivo existe.
-        if not os.path.exists(output_file_points):
-            # Se o arquivo não existir, cria um novo.
-            with open(output_file_points, 'w') as f:
-                pass
-        
-        if os.path.getsize(output_file_points) == 0:
-            with open(output_file_points, 'w', newline='') as tsv_out:
-                writer = csv.writer(tsv_out, delimiter='\n')
-                writer.writerow(yhat)
-        else:
-            # Ler o arquivo existente
-            with open(output_file_points, 'r', newline='') as tsv_in:
-                reader = csv.reader(tsv_in, delimiter='\t')
-                data = list(reader)
+    # Transpondo a lista de pontos filtrados
+    filtered_points_transposed = np.array(filtered_points).T.tolist()
 
-            # Adicionar o novo ponto a cada linha
-            for i in range(len(data)):
-                data[i].append(yhat[i])
-
-            # Reescrever o arquivo com o novo ponto
-            with open(output_file_points, 'w', newline='') as tsv_out:
-                writer = csv.writer(tsv_out, delimiter='\t')
-                writer.writerows(data)
+    # Escrevendo os pontos transpostos no arquivo TSV
+    with open(output_file_points, 'w', newline='') as tsv_out:
+        writer = csv.writer(tsv_out, delimiter='\t')
+        writer.writerows(filtered_points_transposed)
 
  
     
