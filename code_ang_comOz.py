@@ -42,27 +42,27 @@ def calculate_midpoint(x1, y1, z1, x2, y2, z2):
     return midpoint_x, midpoint_y, midpoint_z
 
 
+# Definir cores únicas para cada landmark
+colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (255, 0, 255), (0, 255, 255), (128, 0, 0), (0, 128, 0), (0, 0, 128), (128, 128, 0)]
+
 def processa_frame(image, pose):
     """Processa um frame de vídeo e retorna os pontos de referência do corpo."""
-
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image.flags.writeable = False
-
     results = pose.process(image)
-
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
     return results
-
-
-
-def desenha_landmarks(image, landmarks, connections):
+def desenha_landmarks(image, landmarks):
     """Desenha os pontos de referência do corpo na imagem."""
+    if landmarks:
+        for idx, landmark in enumerate(landmarks.landmark):
+            landmark_px = tuple(map(int, np.array([landmark.x, landmark.y]) * np.array([image.shape[1], image.shape[0]])))
+            color = colors[idx % len(colors)]  # Seleciona uma cor diferente para cada ponto de landmark
+            cv2.circle(image, landmark_px, 5, color, -1)
+            cv2.putText(image, str(idx), (landmark_px[0] + 10, landmark_px[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    mp_drawing.draw_landmarks(image, landmarks, connections,
-                             mp_drawing.DrawingSpec(color=(245, 117, 66), thickness=2, circle_radius=2),
-                             mp_drawing.DrawingSpec(color=(245, 66, 280), thickness=2, circle_radius=2))
+
 
 
 
@@ -84,6 +84,12 @@ def main(cap, video_name):
     frame_count = 0
     #utils_video.processar_videos('sample_videos')
 
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    
+    # Atribuir essas informações às variáveis image_width e image_height
+    image_width = width
+    image_height = height
 
     vetor_wrist1 = [[],[],[]]
     vetor_wrist2 = [[],[],[]]
@@ -102,6 +108,8 @@ def main(cap, video_name):
     
     # Cria uma instância do objeto Pose fora do loop
     pose = mp_pose.Pose(min_detection_confidence=0.7, min_tracking_confidence=0.7)
+    
+
     while cap.isOpened():
         ret, frame = cap.read()
 
@@ -155,8 +163,8 @@ def main(cap, video_name):
             # Coleta de X, Y E Z de todos os pontos necessários
             #_________________________________________________________________________
 
-                wrist1 = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
-                        landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y,
+                wrist1 = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].z]
                 
                 a,b,c = wrist1
@@ -165,17 +173,19 @@ def main(cap, video_name):
                 vetor_wrist1[2].append(c)
                 
 
-                shoulder1 = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
-                        landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y,
+                shoulder1 = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].z]
+                #print(shoulder1)
+                #print(landmarks[12])
                 a,b,c = shoulder1
                 vetor_shoulder1[0].append(a)
                 vetor_shoulder1[1].append(b)
                 vetor_shoulder1[2].append(c)
             
 
-                elbow1 = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
-                        landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y, 
+                elbow1 = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y * image_height, 
                         landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].z]
                 a,b,c = elbow1
                 vetor_elbow1[0].append(a)
@@ -183,8 +193,8 @@ def main(cap, video_name):
                 vetor_elbow1[2].append(c)
 
 
-                wrist2 = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y,
+                wrist2 = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
                 a,b,c = wrist2
                 vetor_wrist2[0].append(a)
@@ -192,8 +202,8 @@ def main(cap, video_name):
                 vetor_wrist2[2].append(c)          
 
 
-                shoulder2 = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y,
+                shoulder2 = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z]
                 a,b,c = shoulder2
                 vetor_shoulder2[0].append(a)
@@ -202,8 +212,8 @@ def main(cap, video_name):
 
 
             
-                elbow2 = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y, 
+                elbow2 = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y * image_height, 
                         landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z]
                 a,b,c = elbow2
                 vetor_elbow2[0].append(a)
@@ -211,8 +221,8 @@ def main(cap, video_name):
                 vetor_elbow2[2].append(c)
             
 
-                hip1 = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
-                        landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y,
+                hip1 = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].z]
                 a,b,c = hip1
                 vetor_hip1[0].append(a)
@@ -220,8 +230,8 @@ def main(cap, video_name):
                 vetor_hip1[2].append(c)
 
               
-                hip2 = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y,
+                hip2 = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].z]
                 a,b,c = hip2
                 vetor_hip2[0].append(a)
@@ -229,8 +239,8 @@ def main(cap, video_name):
                 vetor_hip2[2].append(c)  
 
              
-                olho1 = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].x,
-                        landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].y,
+                olho1 = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.RIGHT_EYE_INNER.value].z]
                 a,b,c = olho1
                 vetor_olho1[0].append(a)
@@ -238,8 +248,8 @@ def main(cap, video_name):
                 vetor_olho1[2].append(c)  
 
 
-                olho2 = [landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].y,
+                olho2 = [landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.LEFT_EYE_INNER.value].z]
                 a,b,c = olho2
                 vetor_olho2[0].append(a)
@@ -247,16 +257,16 @@ def main(cap, video_name):
                 vetor_olho2[2].append(c)  
 
             
-                knee1 = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
-                        landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y,
+                knee1 = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].z]
                 a,b,c = knee1
                 vetor_knee1[0].append(a)
                 vetor_knee1[1].append(b)
                 vetor_knee1[2].append(c)  
 
-                knee2 = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y,
+                knee2 = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x * image_width,
+                        landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y * image_height,
                         landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].z]
                 a,b,c = knee2
                 vetor_knee2[0].append(a)
@@ -284,11 +294,11 @@ def main(cap, video_name):
                  #   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
         except:
             pass
-        
 
 
-        desenha_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-
+    
+        #desenha_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+        desenha_landmarks(frame, results.pose_landmarks)
         #utils_video.frames_from_video(frame, frame_count, OUT_FILENAME_VIDEO, FOLDER_IMAGE_PATH)
     
         cv2.imshow('Imagem WebCam', frame)
@@ -299,8 +309,6 @@ def main(cap, video_name):
 
         frame_count += 1  # Incrementa frame
 
-
-    
 
 
 
